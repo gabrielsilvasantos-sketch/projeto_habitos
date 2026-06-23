@@ -3,45 +3,9 @@ import sqlite3
 conexao = sqlite3.connect("banco.db")
 cursor = conexao.cursor()
 
-
-def listar_usuarios():
-    """Função auxiliar para exibir os usuários disponíveis antes das ações"""
-    try:
-        cursor.execute("SELECT id, nome FROM usuarios")
-        usuarios = cursor.fetchall()
-        if usuarios:
-            print("\n--- Usuários Cadastrados ---")
-            for u in usuarios:
-                print(f"ID: {u[0]} | Nome: {u[1]}")
-            print("")
-        else:
-            print("Nenhum usuário cadastrado no sistema.")
-    except sqlite3.OperationalError:
-        print("[Aviso] Tabela de usuários não encontrada.")
-
-
-def listar_habitos_por_usuario(usuario_id):
-    """Função auxiliar para listar hábitos de um usuário e validar sua existência"""
-    cursor.execute(
-        "SELECT id, nome, descricao, frequencia, meta FROM habitos WHERE usuario_id=?",
-        (usuario_id,)
-    )
-    dados = cursor.fetchall()
-
-    if len(dados) == 0:
-        print(f"\nNenhum hábito encontrado para o usuário com ID {usuario_id}.\n")
-        return False
-    else:
-        print(f"\n--- Hábitos do Usuário {usuario_id} ---")
-        for habito in dados:
-            print(f"ID Hábito: {habito[0]} | Nome: {habito[1]} | Descrição: {habito[2]} | Freq: {habito[3]} | Meta: {habito[4]}")
-        print("")
-        return True
-
-
 def cadastrar():
     print("CADASTRAR NOVO HÁBITO")
-    listar_usuarios()
+    usuarios_id()
     usuario_id = int(input("\nDigite o ID do usuário: "))
     
     nome = input("Nome do hábito: ")
@@ -73,14 +37,13 @@ def cadastrar():
 
 def listar():
     print("LISTAR HÁBITOS")
-    listar_usuarios()
     usuario = int(input("Digite o ID do usuário para ver os hábitos: "))
     listar_habitos_por_usuario(usuario)
 
 
 def editar():
     print("EDITAR HÁBITO ")
-    listar_usuarios()
+    usuarios_id()
     usuario_id = int(input("Digite o ID do usuário: "))
     
     if not listar_habitos_por_usuario(usuario_id):
